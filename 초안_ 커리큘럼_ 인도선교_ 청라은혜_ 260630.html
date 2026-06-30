@@ -1,0 +1,612 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1.5rem 0; }
+.tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+.tab { padding: 8px 20px; border-radius: 20px; border: 0.5px solid var(--border-strong); cursor: pointer; font-size: 14px; color: var(--text-secondary); background: var(--surface-1); transition: all .2s; font-weight: 400; }
+.tab.active { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); font-weight: 500; }
+.panel { display: none; }
+.panel.active { display: block; }
+.hero { background: var(--surface-1); border-radius: 12px; border: 0.5px solid var(--border); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.hero-title { font-size: 18px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+.hero-meta { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 10px; font-weight: 500; margin-right: 6px; }
+.badge-blue { background: var(--bg-accent); color: var(--text-accent); }
+.badge-green { background: var(--bg-success); color: var(--text-success); }
+.badge-amber { background: var(--bg-warning); color: var(--text-warning); }
+.badge-red { background: var(--bg-danger); color: var(--text-danger); }
+.section-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin: 1.5rem 0 .75rem; }
+.block { background: var(--surface-2); border-radius: 12px; border: 0.5px solid var(--border); overflow: hidden; margin-bottom: 10px; }
+.block-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+.time-pill { font-size: 12px; font-weight: 500; background: var(--surface-0); border: 0.5px solid var(--border-strong); border-radius: 12px; padding: 2px 10px; color: var(--text-secondary); white-space: nowrap; }
+.block-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.block-subtitle { font-size: 12px; color: var(--text-secondary); }
+.block-body { padding: 12px 16px; }
+.block-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 6px; }
+.block-body p:last-child { margin-bottom: 0; }
+.block-body strong { color: var(--text-primary); font-weight: 500; }
+.block-body ul { padding-left: 1.25rem; }
+.block-body li { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.tip { background: var(--bg-warning); border-left: 3px solid var(--border-warning); border-radius: 0 6px 6px 0; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: var(--text-warning); }
+.tip-blue { background: var(--bg-accent); border-left: 3px solid var(--border-accent); border-radius: 0 6px 6px 0; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: var(--text-accent); }
+.material-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.mat { font-size: 12px; background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 6px; padding: 3px 10px; color: var(--text-secondary); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+.note-card { background: var(--surface-1); border-radius: 10px; border: 0.5px solid var(--border); padding: 12px; }
+.note-card h4 { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+.note-card ul { padding-left: 1.1rem; }
+.note-card li { font-size: 12px; color: var(--text-secondary); line-height: 1.65; }
+.divider { height: 0.5px; background: var(--border); margin: 1.25rem 0; }
+.verse-box { background: var(--bg-accent); border-radius: 10px; padding: 12px 16px; margin-bottom: 1rem; border: 0.5px solid var(--border-accent); }
+.verse-box .verse-text { font-size: 15px; font-weight: 500; color: var(--text-accent); line-height: 1.6; margin-bottom: 4px; }
+.verse-box .verse-ref { font-size: 12px; color: var(--text-accent); opacity: .75; }
+.accent-bar { width: 3px; background: var(--fill-accent); border-radius: 2px; flex-shrink: 0; }
+.accent-bar-green { width: 3px; background: var(--fill-success); border-radius: 2px; flex-shrink: 0; }
+.flex-gap { display: flex; gap: 10px; }
+.timeline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.dot-blue { background: var(--fill-accent); }
+.dot-green { background: var(--fill-success); }
+.dot-amber { background: var(--fill-warning); }
+.dot-red { background: var(--fill-danger); }
+.dot-gray { background: var(--border-stronger); }
+</style>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="show('children')">🧒 어린이사역 (4h)</button>
+    <button class="tab" onclick="show('mother')">🤱 마더와이즈 (2h)</button>
+    <button class="tab" onclick="show('culture')">🇮🇳 현장 가이드</button>
+  </div>
+
+  <!-- CHILDREN PANEL -->
+  <div id="panel-children" class="panel active">
+    <div class="hero">
+      <div class="hero-title">🎉 어린이사역 커리큘럼</div>
+      <div class="hero-meta">
+        <span class="badge badge-blue">4시간</span>
+        <span class="badge badge-green">대상 5–14세</span>
+        <span class="badge badge-amber">약 30명</span>
+      </div>
+      <div style="margin-top:10px">
+        <div class="verse-box">
+          <div class="verse-text">"하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니" (요 3:16)</div>
+          <div class="verse-ref">핵심 주제 — "예수님은 나를 알아! (Jesus Knows Me!)"</div>
+        </div>
+      </div>
+      <div class="hero-meta">달리트(불가촉천민) 아이들은 사회에서 투명 인간 취급을 받습니다. <strong>"하나님이 너의 이름을 아신다"</strong>는 메시지가 가장 강력한 복음입니다. 시편 139편과 눅 18:15-17 병행.</div>
+    </div>
+
+    <div class="section-label">📋 사전 준비사항</div>
+    <div class="two-col">
+      <div class="note-card">
+        <h4>필수 준비물</h4>
+        <ul>
+          <li>색종이 / 크레용 / 풀 (A4 1인 1장)</li>
+          <li>풍선 (다양한 색상, 아이 1인당 2개)</li>
+          <li>인형극 세트 또는 손인형 4–5개</li>
+          <li>빔프로젝터 또는 대형 그림 자료</li>
+          <li>힌디어-한국어 통역 담당자 필수</li>
+          <li>간식: 비스킷/바나나 (채식, 땅콩 주의)</li>
+          <li>스티커 (별 모양, 하트 등)</li>
+          <li>명찰 스티커 (이름 기록용)</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h4>공간/환경 설정</h4>
+        <ul>
+          <li>바닥에 매트/천 깔기 (아이들 좌식 문화)</li>
+          <li>신발 벗는 공간 입구에 마련</li>
+          <li>그늘진 공간 또는 천막 필수 (더위)</li>
+          <li>물 충분히 준비 (탈수 방지)</li>
+          <li>남아/여아 혼합 가능하나 연령별 구분 권장</li>
+          <li>사진 촬영 전 학부모/현지 리더 동의 필수</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">⏱ 4시간 타임라인</div>
+
+    <!-- Block 1 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:00–0:20</div>
+        <div>
+          <div class="block-title">환영 & 등록 — "안녕, 네 이름이 뭐야?"</div>
+          <div class="block-subtitle">20분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>목적:</strong> 아이들이 歡迎받는다는 느낌을 받도록 설계. 이름을 묻고, 명찰 스티커에 이름 쓰기 or 그리기.</p>
+        <ul>
+          <li>입장하는 아이마다 악수/나마스테로 맞이</li>
+          <li>명찰에 본인 이름 쓰기 (못 쓰면 선교사가 써줌) → 이름 붙여주는 행위 자체가 존엄 선포</li>
+          <li>간단한 한국말 인사 가르치기: "안녕하세요!" → 아이들 웃음 유발</li>
+          <li>간식 나눠주며 자리 잡기 (이 시간 중 늦게 오는 아이들 수용)</li>
+        </ul>
+        <div class="tip-blue">💡 인도 아이들은 한국어 발음이 재밌어서 잘 따라합니다. "안녕!"은 아이스브레이킹 최고 도구입니다.</div>
+      </div>
+    </div>
+
+    <!-- Block 2 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:20–0:45</div>
+        <div>
+          <div class="block-title">찬양 & 율동 — "God is so Good"</div>
+          <div class="block-subtitle">25분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>목적:</strong> 몸을 움직이며 분위기를 열고, 예배의 시작을 느끼게 함. 힌디어 찬양 포함 권장.</p>
+        <ul>
+          <li><strong>곡 1 (10분):</strong> "God is so Good" — 단순 멜로디, 행동으로 배울 수 있음. 한국팀이 먼저 율동 시연 후 따라하게.</li>
+          <li><strong>곡 2 (8분):</strong> "예수 사랑하심을" (힌디어 버전 "Yeshu mujhse pyar karta" 미리 연습). 인도 아이들에게 익숙한 곡.</li>
+          <li><strong>곡 3 (7분):</strong> 신나는 박수 찬양 1곡 — 풍선을 나눠주고 풍선 치며 찬양</li>
+        </ul>
+        <div class="tip">⚠️ 힌두 신들의 이름과 혼동될 수 있어 찬양 가사 중 "주님" 개념을 통역자가 명확히 설명해야 합니다.</div>
+      </div>
+    </div>
+
+    <!-- Block 3 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:45–1:20</div>
+        <div>
+          <div class="block-title">성경 이야기 — 인형극 & 비주얼 스토리텔링</div>
+          <div class="block-subtitle">35분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>본문:</strong> 눅 18:15-17 (예수님이 어린아이를 품으심) + 시편 139:13-14 (하나님이 나를 지으심)</p>
+        <p><strong>핵심 메시지:</strong> "세상은 너를 작다고 하지만, 예수님은 너를 왕처럼 품으셨어!"</p>
+        <ul>
+          <li><strong>인형극 (15분):</strong> 제자들이 아이들을 막는 장면 → 예수님이 아이들을 부르시는 장면. 손인형 3–4개로 연기. 통역자 동시 힌디어 해설.</li>
+          <li><strong>그림 카드 설명 (10분):</strong> 대형 그림 자료(A3 이상)로 시편 139편 내용 시각화 — 엄마 뱃속에서부터 아는 하나님</li>
+          <li><strong>핵심 문장 반복 (10분):</strong> "예수님은 나를 알아!" → 힌디어로 "Yeshu mujhe jaanta hai!" — 아이들이 크게 따라 외치기 3회 반복</li>
+        </ul>
+        <div class="tip-blue">💡 인도 아이들은 반복 및 call & response 방식에 매우 잘 반응합니다. 선교사가 외치면 아이들이 따라 외치는 구조 적극 활용.</div>
+        <div class="material-row">
+          <span class="mat">손인형 4개</span>
+          <span class="mat">대형 그림 카드</span>
+          <span class="mat">힌디어 통역자</span>
+          <span class="mat">메인 멘트 문구 카드</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 4 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">1:20–1:50</div>
+        <div>
+          <div class="block-title">만들기 활동 — "내 손바닥 기도나무"</div>
+          <div class="block-subtitle">30분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>목적:</strong> 각자의 손바닥이 유일함(하나님이 지으심)을 체험. 만든 결과물을 선물로 가져갈 수 있음.</p>
+        <ul>
+          <li>A4 용지에 본인 손바닥을 크레용으로 따라 그리기</li>
+          <li>손바닥 나무 위에 소원/기도 제목을 그림으로 표현 (문맹 아이들도 그림으로 가능)</li>
+          <li>선교사가 돌아다니며 각 아이 이름을 카드에 적어주고 "God knows your name: [이름]" 문구 써주기</li>
+          <li>완성 후 선교사가 각 아이 손 위에 손을 얹고 짧게 축복 기도 (1인당 10초)</li>
+        </ul>
+        <div class="tip">⚠️ 이성 아이에게 신체 접촉 시 문화적 주의 요망. 가능하면 동성 선교사가 기도. 머리에 손 얹는 것은 인도에서 연장자의 축복 행위로 받아들여져 자연스러움.</div>
+        <div class="material-row">
+          <span class="mat">A4 용지 30장+</span>
+          <span class="mat">크레용/색연필</span>
+          <span class="mat">매직 펜 (선교사 용)</span>
+          <span class="mat">풀 / 가위</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 5 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">1:50–2:10</div>
+        <div>
+          <div class="block-title">간식 & 자유시간 — 관계 형성의 골든타임</div>
+          <div class="block-subtitle">20분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>간식 권장:</strong> 바나나, 비스킷 (채식/순수 베지터리언). 물 충분히. <strong>절대 금지: 소고기/돼지고기 성분 포함 식품.</strong></p>
+        <p>이 시간에 선교사들은 각 테이블 돌아다니며 아이들과 개인 교류. 한국 기념품(스티커, 작은 연필 등) 나눠주기 가능.</p>
+        <div class="tip-blue">💡 이 자유 시간이 사실 가장 중요한 복음 시간입니다. 아이 하나하나에게 눈 맞추고 이름 불러주는 행위 자체가 사역입니다.</div>
+      </div>
+    </div>
+
+    <!-- Block 6 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">2:10–2:45</div>
+        <div>
+          <div class="block-title">게임 & 신체활동 — 그룹 빌딩</div>
+          <div class="block-subtitle">35분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>목적:</strong> 공동체 경험, 경쟁보다 협력을 강조. 한국과 인도 아이들이 함께할 수 있는 언어 장벽 없는 게임.</p>
+        <ul>
+          <li><strong>게임 1 (12분): "예수님 따라가기" 기차 게임</strong> — 선두가 외치는 동작을 뒤따라 하며 뱀처럼 이동. 선두를 계속 교체하며 모든 아이가 리더 경험.</li>
+          <li><strong>게임 2 (12분): 풍선 미션</strong> — 팀별로 풍선 공중에 오래 띄우기. 떨어지면 함께 구하는 협력 게임. 팀 구호: "예수!(Yeshu!)" 외치기.</li>
+          <li><strong>게임 3 (11분): 수화 찬양</strong> — "God is so Good" 수화 동작 배우기. 언어 없이 소통하는 경험.</li>
+        </ul>
+        <div class="tip">⚠️ 델리 빈민촌은 기온이 40도 이상인 경우가 많습니다. 활동 시간 물 수시 공급, 그늘 확보 필수. 아이들 과호흡/탈수 징후 관찰.</div>
+      </div>
+    </div>
+
+    <!-- Block 7 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">2:45–3:25</div>
+        <div>
+          <div class="block-title">스테이션 활동 — 4개 구역 동시 운영</div>
+          <div class="block-subtitle">40분 (10분씩 순환)</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>아이들을 4그룹으로 나눠 10분씩 스테이션 순환. 각 스테이션당 선교사 1–2인 배치.</p>
+        <div class="two-col" style="margin-top:10px">
+          <div class="note-card">
+            <h4>🎨 스테이션 A — 아트 (도화)</h4>
+            <ul>
+              <li>천국 모습 그리기</li>
+              <li>"내가 생각하는 하나님은?" 자유 표현</li>
+              <li>선교사가 옆에 앉아 질문하며 대화</li>
+            </ul>
+          </div>
+          <div class="note-card">
+            <h4>🎵 스테이션 B — 뮤직 (음악)</h4>
+            <ul>
+              <li>간단한 타악기 (냄비, 통) 리듬 맞추기</li>
+              <li>"Jesus Loves Me" 힌디어 버전 연습</li>
+              <li>손뼉 리듬 게임</li>
+            </ul>
+          </div>
+          <div class="note-card">
+            <h4>📖 스테이션 C — 스토리 (말씀)</h4>
+            <ul>
+              <li>삭개오 이야기 그림 카드로 재구성</li>
+              <li>아이들이 직접 그림 순서 맞추기</li>
+              <li>"나도 예수님을 만난다면?" 나눔</li>
+            </ul>
+          </div>
+          <div class="note-card">
+            <h4>🙏 스테이션 D — 기도 (프레이어)</h4>
+            <ul>
+              <li>소원 나무에 소원 잎 붙이기</li>
+              <li>짧은 기도문 함께 읽기 (그림 기도)</li>
+              <li>축복 스티커 이마에 붙여주기</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 8 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">3:25–3:50</div>
+        <div>
+          <div class="block-title">복음 초청 & 결단 — 씨 뿌리기</div>
+          <div class="block-subtitle">25분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>주의:</strong> 합동 교단 특성상 복음 제시는 명확하되, 강압적이지 않게. 힌두/무슬림 배경의 아이들에게는 씨를 뿌리는 것으로 충분.</p>
+        <ul>
+          <li><strong>복음 제시 (10분):</strong> 왕국 이야기 — 누구나 하나님의 왕국에 들어갈 수 있다는 메시지. 그림 전도지 사용. "예수님은 나를 위해 오셨어" 중심.</li>
+          <li><strong>초청 (5분):</strong> "예수님의 사랑을 알고 싶은 사람은 손들어봐" → 손든 아이들에게 짧은 영접 기도 인도 (힌디어로). 강요 금지.</li>
+          <li><strong>영접 기도 (5분):</strong> 통역자와 함께. 간단하고 진심 담기게. 아이들 눈높이 언어 사용.</li>
+          <li><strong>응답 카드 (5분):</strong> "나는 오늘 예수님을 알게 됐어요 ✓" 스티커 붙이기 → 가져가는 기념품 역할도 함.</li>
+        </ul>
+        <div class="tip">⚠️ 결단 카드나 개인정보 수집은 현지 선교사 가이드에 따라 결정. 부모 동의 없이 종교적 결단을 강요하는 것은 법적·문화적 위험이 있음. '씨 뿌리기'에 집중.</div>
+      </div>
+    </div>
+
+    <!-- Block 9 -->
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">3:50–4:00</div>
+        <div>
+          <div class="block-title">마무리 & 선물 증정 — 축제로 끝내기</div>
+          <div class="block-subtitle">10분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>오늘 배운 핵심 문장 다함께 외치기: <strong>"Yeshu mujhe jaanta hai! (예수님은 나를 알아!)"</strong></p>
+        <p>각 아이에게 선물 증정: 작은 책(성경 그림책, 힌디어), 연필, 만든 작품 들고 돌아가기.</p>
+        <p>선교사들이 일렬로 서서 아이들이 나가면서 하이파이브 + "God bless you!" 전달.</p>
+        <div class="tip-blue">💡 마지막 인상이 아이들 마음에 남습니다. 한 명 한 명 눈 맞추며 보내는 것이 이 사역의 클라이맥스입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOTHERWISE PANEL -->
+  <div id="panel-mother" class="panel">
+    <div class="hero">
+      <div class="hero-title">🌿 마더와이즈 단기선교 버전</div>
+      <div class="hero-meta">
+        <span class="badge badge-green">2시간</span>
+        <span class="badge badge-blue">대상 : 어린이 어머니들</span>
+        <span class="badge badge-red">여성 사역자만 진행</span>
+      </div>
+      <div style="margin-top:10px">
+        <div class="verse-box">
+          <div class="verse-text">"너는 내 눈에 보배롭고 존귀하며 내가 너를 사랑하였은즉" (사 43:4)</div>
+          <div class="verse-ref">핵심 주제 — "하나님의 눈에 나는 보배다 (Prabhu ki najar mein main anmol hoon)"</div>
+        </div>
+      </div>
+      <div class="hero-meta">델리 빈민촌 달리트 어머니들은 사회적으로 가장 억압받는 계층. <strong>카스트 제도 + 빈곤 + 성차별</strong>의 삼중 억압 속에서 자신의 가치를 잊고 삽니다. 마더와이즈의 핵심인 <strong>"성경적 정체성 회복"</strong>이 이 어머니들에게 가장 필요한 복음입니다.</div>
+    </div>
+
+    <div class="section-label">📋 사전 준비사항</div>
+    <div class="two-col">
+      <div class="note-card">
+        <h4>필수 준비물</h4>
+        <ul>
+          <li>힌디어 여성 통역자 필수 (남성 통역 사용 금지)</li>
+          <li>꽃 (저렴한 현지 마리골드 가능) 1인 1송이</li>
+          <li>작은 노트 또는 종이 (기도 제목 작성)</li>
+          <li>간단한 간식 (차이 티, 비스킷)</li>
+          <li>아이들 돌봄 공간 별도 마련 (아이와 함께 오는 어머니 배려)</li>
+          <li>사진 카드 or 그림 자료 (문맹 배려)</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h4>문화/환경 설정</h4>
+        <ul>
+          <li>여성 전용 공간 확보 필수 (남성 출입 제한)</li>
+          <li>선교사 여성 모두 보수적 복장 (살바르 카미즈 권장)</li>
+          <li>바닥 좌식 또는 의자 준비</li>
+          <li>작은 소그룹 (5–8명) 구성 권장</li>
+          <li>아이 돌봄팀 별도 배치하면 참여율 2배 상승</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">⏱ 2시간 타임라인</div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:00–0:20</div>
+        <div>
+          <div class="block-title">환영 & 아이스브레이킹 — "나는 어떤 꽃일까?"</div>
+          <div class="block-subtitle">20분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>어머니들이 앉으면 꽃 한 송이씩 건네주며 환영. "이 꽃처럼 당신도 아름답습니다"라고 말하기.</p>
+        <ul>
+          <li><strong>자기소개 (10분):</strong> 이름, 자녀 몇 명, 꿈이 있다면 무엇인지 — 꿈을 묻는 질문 자체가 이 어머니들에겐 파격적 경험.</li>
+          <li><strong>아이스브레이킹 (10분):</strong> "엄마로서 가장 행복했던 순간은?" → 긍정 기억으로 마음 열기. 억압적 현실보다 기쁨으로 시작.</li>
+        </ul>
+        <div class="tip-blue">💡 인도 어머니들은 처음에 매우 수줍어하고 자기 표현을 꺼립니다. 강요하지 말고 웃음으로 기다리세요. 한 명이 말을 시작하면 나머지도 열립니다.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:20–0:35</div>
+        <div>
+          <div class="block-title">찬양 & 예배 — 여성들만의 안전한 예배 공간</div>
+          <div class="block-subtitle">15분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>여성 선교사가 인도. 힌디어 찬양 1–2곡.</p>
+        <ul>
+          <li><strong>곡 1:</strong> "주님 품에 안기어" (느린 버전) — 힌디어로 "Prabhu ki god mein"</li>
+          <li><strong>곡 2:</strong> "나는 주님의 것" — 정체성 찬양. 이 어머니들에게 "나는 누군가에게 속한 소중한 존재"라는 선포.</li>
+        </ul>
+        <div class="tip">⚠️ 힌두 배경 여성들은 예배가 낯설 수 있습니다. "우리 신께 감사하는 시간"이라고 소개하면 거부감을 줄일 수 있습니다. 몸 동작이나 율동은 자연스럽게만.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">0:35–1:05</div>
+        <div>
+          <div class="block-title">말씀 나눔 — "하나님이 보시는 내 가치"</div>
+          <div class="block-subtitle">30분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>본문:</strong> 이사야 43:1-4 + 잠언 31:10-31 일부 + 마더와이즈 '포도나무 원리' 적용</p>
+        <p><strong>구조:</strong></p>
+        <ul>
+          <li><strong>도입 (5분):</strong> "세상은 당신에게 뭐라고 말합니까?" — 카스트, 가난, 성별로 정의된 자신의 이야기를 잠시 꺼내도록 유도. 선교사가 먼저 자신의 취약한 이야기 나눔.</li>
+          <li><strong>말씀 (12분):</strong> 이사야 43:4 — "너는 내 눈에 보배롭고 존귀하다." 하나님은 카스트로 사람을 구분하지 않으신다. 그림 자료로 시각화. 통역자 동시 진행.</li>
+          <li><strong>적용 (8분):</strong> 마더와이즈 '포도나무-가지' 원리 — 나무에 붙어 있는 가지가 열매를 맺듯, 하나님과 연결된 엄마가 자녀에게 생명을 전달한다. 가지 그림 카드 사용.</li>
+          <li><strong>나눔 (5분):</strong> "오늘 하나님이 나에게 하신 말씀은?" 2–3명 자원해서 나눔.</li>
+        </ul>
+        <div class="tip-blue">💡 문맹 어머니들을 위해 모든 설명은 그림 카드로 병행하세요. 긴 성경 구절보다 짧고 강력한 한 문장이 더 효과적입니다: "하나님은 당신을 사랑합니다."</div>
+        <div class="material-row">
+          <span class="mat">이사야 43:4 대형 그림 카드</span>
+          <span class="mat">포도나무 그림 자료</span>
+          <span class="mat">힌디어 성경 구절 카드</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">1:05–1:30</div>
+        <div>
+          <div class="block-title">실제적 워크숍 — "내 자녀를 위한 기도 선언"</div>
+          <div class="block-subtitle">25분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p><strong>목적:</strong> 어머니가 자녀를 위한 기도자로 세워지는 경험. 마더와이즈의 핵심인 멘토링 기도 실습.</p>
+        <ul>
+          <li><strong>기도 선언 카드 작성 (10분):</strong> 종이에 자녀 이름 쓰고, 자녀를 위한 소원 3가지 그림으로 표현. "공부 잘하게, 아프지 않게, 착한 아이로" 등 → 선교사가 이를 기도로 연결해줌.</li>
+          <li><strong>소그룹 기도 (10분):</strong> 3–4명씩 소그룹에서 서로의 기도 제목 나누고 손잡고 기도. 인도 여성들은 손잡는 것에 자연스러움.</li>
+          <li><strong>선교사 축복 기도 (5분):</strong> 각 어머니의 이름을 부르며 짧은 축복 기도. "[이름]님, 하나님이 당신을 특별히 아십니다."</li>
+        </ul>
+        <div class="tip">⚠️ 어머니들이 기도 중 울 수 있습니다. 이는 매우 자연스러운 반응이며 성령의 역사입니다. 억지로 진정시키지 말고, 조용히 옆에 있어주세요.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">1:30–1:50</div>
+        <div>
+          <div class="block-title">차이 타임 & 자유 나눔 — 관계의 완성</div>
+          <div class="block-subtitle">20분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>현지 차이(masala chai) 또는 차를 함께 마시며 자유 교류. 인도 문화에서 음식을 나누는 것은 <strong>최고의 신뢰 표현</strong>입니다.</p>
+        <p>선교사들이 각 테이블에 앉아 자연스러운 대화. 자녀 교육, 건강, 가정 어려움 등 들어주기.</p>
+        <div class="tip-blue">💡 이 시간에 어머니들이 가장 깊은 이야기를 꺼냅니다. "우리 아이가 학교를 못 가요", "남편이 술을 마셔요" — 판단하지 말고 들어주고, 기도해주겠다고 말씀하세요.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <div class="time-pill">1:50–2:00</div>
+        <div>
+          <div class="block-title">마무리 — 선포와 파송</div>
+          <div class="block-subtitle">10분</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <p>모두 일어서서 함께 선포: <strong>"나는 하나님의 눈에 보배롭습니다! (Main Prabhu ki najar mein anmol hoon!)"</strong> — 3회 함께 외치기.</p>
+        <p>각 어머니에게 작은 선물: 꽃 + 힌디어 성경 구절 카드 + 자녀 이름 써진 기도 카드 (가져가도록).</p>
+        <p>현지 선교사/교회 연락처 제공 — 지속적 양육 연결고리 확보.</p>
+        <div class="tip-blue">💡 마더와이즈 단기버전의 진짜 열매는 귀국 후입니다. 현지 여성 리더와 연결해 소그룹이 자생적으로 이어지도록 현지 선교사와 사전 조율하세요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CULTURE PANEL -->
+  <div id="panel-culture" class="panel">
+    <div class="hero">
+      <div class="hero-title">🇮🇳 뉴델리 빈민촌 현장 가이드</div>
+      <div class="hero-meta">단기선교팀 전원 필독 — 현지 습성, 금기, 실전 팁</div>
+    </div>
+
+    <div class="section-label">⚠️ 절대 금기사항</div>
+    <div class="two-col">
+      <div class="note-card">
+        <h4>신체/언어</h4>
+        <ul>
+          <li>이성 현지인과 악수/포옹 금지</li>
+          <li>머리 만지기 — 매우 무례 (발이 천함, 머리가 신성)</li>
+          <li>왼손으로 물건 전달/악수 금지 (오른손 사용)</li>
+          <li>발로 물건 가리키거나 발로 문 열기 금지</li>
+          <li>공개적 비판 / 직접적 거절 표현 금지</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h4>음식/복장</h4>
+        <ul>
+          <li>소고기 절대 금지 (힌두 성물)</li>
+          <li>돼지고기 금지 (무슬림 거주 혼합 지역)</li>
+          <li>모든 음식은 순수 채식 준비 권장</li>
+          <li>여성 선교사: 어깨/무릎 노출 금지</li>
+          <li>살바르 카미즈(인도 전통복) 착용 권장</li>
+          <li>성소/집 입장 시 반드시 신발 벗기</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">🌡 환경 & 건강</div>
+    <div class="block">
+      <div class="block-body">
+        <ul>
+          <li><strong>기온:</strong> 델리 4–6월 40–48도. 이른 오전(8–10시) 또는 오후 늦게(4시 이후) 사역 권장. 정오 전후 야외 사역 위험.</li>
+          <li><strong>물:</strong> 반드시 생수 페트병만. 수돗물/정수기 물도 금지. 아이들에게도 봉인된 생수만 제공.</li>
+          <li><strong>예방접종:</strong> A형 간염, 장티푸스, 파상풍, 말라리아 예방약 필수. 출발 최소 4주 전 접종.</li>
+          <li><strong>손 위생:</strong> 알코올 손소독제 항시 携帯. 현지 음식 조리 시 개인 위생 철저.</li>
+          <li><strong>모기:</strong> 뎅기열/말라리아 위험. 방충제, 긴소매 저녁 착용.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">🙏 선교적 고려사항</div>
+    <div class="block">
+      <div class="block-body">
+        <ul>
+          <li><strong>카스트 배경:</strong> 달리트(불가촉천민) 대상 사역 시 "하나님 앞에 모두 평등"이라는 메시지가 가장 강력. 직접적으로 카스트를 언급하는 것은 피하되, 메시지 속에 녹이기.</li>
+          <li><strong>힌두교 맥락:</strong> "신이 많다" → "그 중에 진짜 창조주가 있다"는 브리지 전도 전략. 직접적 "힌두교는 틀렸다" 발언 금지.</li>
+          <li><strong>무슬림 혼재:</strong> 빈민촌에는 힌두-무슬림 혼재. 코란 언급이나 이슬람 비판 절대 금지. 예수님을 선지자(Hazrat Isa)로 소개하는 브리지 가능.</li>
+          <li><strong>종교 전환 금지법:</strong> 인도 일부 주에서 강압적 개종 행위는 법적 문제. "씨를 뿌리고 돌아오는" 접근이 안전하고 성경적.</li>
+          <li><strong>현지 선교사 리더십 존중:</strong> 모든 결정은 현지 선교사/현지 목사님 지도 아래. 선교팀은 지원자 역할.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">💬 힌디어 기본 표현</div>
+    <div class="two-col">
+      <div class="note-card">
+        <h4>기본 인사</h4>
+        <ul>
+          <li>Namaste (나마스테) — 안녕하세요</li>
+          <li>Dhanyavaad (단야바드) — 감사합니다</li>
+          <li>Prabhu (쁘라부) — 주님/하나님</li>
+          <li>Yeshu (예슈) — 예수님</li>
+          <li>Masih (마시) — 그리스도</li>
+          <li>Pyar (쁘야르) — 사랑</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h4>사역 핵심 문구</h4>
+        <ul>
+          <li>"Prabhu tumse pyar karta hai" — 하나님이 당신을 사랑합니다</li>
+          <li>"Yeshu mujhe jaanta hai" — 예수님은 나를 알아</li>
+          <li>"Main anmol hoon" — 나는 소중한 사람입니다</li>
+          <li>"Hamara sath mein dhanyavaad" — 함께해서 감사합니다</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">📦 선물 가이드</div>
+    <div class="block">
+      <div class="block-body">
+        <ul>
+          <li><strong>어린이:</strong> 연필/지우개 세트, 색연필, 힌디어 그림 성경, 작은 공, 스티커 — 한국 제품 스티커나 K-pop 캐릭터는 아이들이 매우 좋아함</li>
+          <li><strong>어머니:</strong> 뒤프나 오일(인도 헤어오일), 비누, 힌디어 성경 구절 카드, 씨앗 봉투 (정원용) — "새 생명"의 상징</li>
+          <li><strong>금지 선물:</strong> 가죽 제품, 알코올 성분 화장품, 돼지/소 관련 이미지 포함 물품</li>
+          <li><strong>배분 방법:</strong> 개인별 소포장 > 대량 배포. 한 명 한 명 눈 맞추며 직접 전달이 핵심.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">📅 사역 당일 체크리스트</div>
+    <div class="block">
+      <div class="block-body">
+        <div class="two-col">
+          <ul>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 힌디어 통역자 사전 미팅 완료</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 현지 선교사와 공간/순서 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 간식 채식 여부 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 생수 충분히 확보</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 핵심 힌디어 문구 암기 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 여성 사역자 복장 점검</li>
+          </ul>
+          <ul>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 신발 벗을 공간 준비</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 의약품/응급키트 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 선물 소포장 완료</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 사진 동의 절차 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 어린이 돌봄팀 배치 확인</li>
+            <li style="font-size:13px;color:var(--text-secondary);line-height:1.8">☐ 팀 기도 완료 후 출발</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
